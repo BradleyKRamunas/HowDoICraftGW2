@@ -8,6 +8,8 @@ import java.util.Objects;
 
 public class Recipe {
 
+    public static final Recipe EMPTY_RECIPE = new Recipe();
+
     @Expose
     @SerializedName("type")
     public String type;
@@ -27,7 +29,6 @@ public class Recipe {
     @Expose
     @SerializedName("chat_link")
     public String chatLink;
-
 
     @Override
     public String toString() {

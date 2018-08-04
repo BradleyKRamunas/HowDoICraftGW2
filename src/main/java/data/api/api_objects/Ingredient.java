@@ -12,6 +12,14 @@ public class Ingredient {
     @SerializedName("count")
     public int quantity;
 
+    public Ingredient() {
+    }
+
+    public Ingredient(int id, int quantity) {
+        this.id = id;
+        this.quantity = quantity;
+    }
+
     @Override
     public String toString() {
         return "Ingredient{" +
@@ -19,4 +27,5 @@ public class Ingredient {
                 ", quantity=" + quantity +
                 '}';
     }
+
 }
