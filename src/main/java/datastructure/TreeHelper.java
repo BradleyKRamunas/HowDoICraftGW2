@@ -4,9 +4,8 @@ import data.api.api_objects.Ingredient;
 import data.api.api_objects.Recipe;
 import data.database.BaseDatabaseTool;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
+import java.sql.SQLException;
+import java.util.*;
 
 public class TreeHelper {
 
@@ -17,7 +16,7 @@ public class TreeHelper {
      * @param databaseTool tool to access database for recipe information
      * @return root node of the tree structure
      */
-    public static ItemNode createTree(int itemId, int quantity, BaseDatabaseTool databaseTool) {
+    public static ItemNode createTree(int itemId, int quantity, BaseDatabaseTool databaseTool) throws SQLException {
         ItemNode root = new ItemNode(itemId, quantity);
         populateIngredients(root, databaseTool);
         return root;
@@ -28,7 +27,7 @@ public class TreeHelper {
      * @param node current node whose list of ingredients is being populated
      * @param databaseTool tool to access database for recipe information
      */
-    private static void populateIngredients(ItemNode node, BaseDatabaseTool databaseTool) {
+    private static void populateIngredients(ItemNode node, BaseDatabaseTool databaseTool) throws SQLException {
         Recipe recipeForNode = databaseTool.getRecipeForId(node.getItemId());
         if(recipeForNode != Recipe.EMPTY_RECIPE) {
             List<Ingredient> ingredients = recipeForNode.ingredients;
@@ -69,6 +68,21 @@ public class TreeHelper {
         }
     }
 
+    public static Set<Integer> getAllItemIds(ItemNode root) {
+        Set<Integer> ids = new TreeSet<>();
+        populateItemIds(root, ids);
+        return ids;
+    }
+
+    private static void populateItemIds(ItemNode current, Set<Integer> ids) {
+        ids.add(current.getItemId());
+        if(!isLeaf(current)) {
+            for(ItemNode child : current.getIngredients()) {
+                populateItemIds(child, ids);
+            }
+        }
+    }
+
     private static boolean isLeaf(ItemNode node) {
         return node.getIngredients().isEmpty();
     }
@@ -83,21 +97,22 @@ public class TreeHelper {
         return true;
     }
 
-    public static List<Integer> getCraftingOrder(ItemNode root) {
-        List<Integer> order = new ArrayList<>();
-        populateCraftingOrder(root, order);
+    public static List<Ingredient> getCraftingOrder(ItemNode root) {
+        List<Ingredient> order = new ArrayList<>();
+        populateCraftingOrder(root, order, 1);
         return order;
     }
 
-    private static void populateCraftingOrder(ItemNode node, List<Integer> order) {
+    private static void populateCraftingOrder(ItemNode node, List<Ingredient> order, int multiplier) {
         if(!isLeaf(node)) {
+            int newMultiplier = multiplier * node.getQuantity();
             if(isParentOfOnlyLeaf(node)) {
-                order.add(node.getItemId());
+                order.add(new Ingredient(node.getItemId(), newMultiplier));
             }else{
                 for(ItemNode child : node.getIngredients()) {
-                    populateCraftingOrder(child, order);
+                    populateCraftingOrder(child, order, newMultiplier);
                 }
-                order.add(node.getItemId());
+                order.add(new Ingredient(node.getItemId(), newMultiplier));
             }
         }
     }

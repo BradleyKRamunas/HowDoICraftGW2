@@ -7,10 +7,8 @@ import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-import java.util.TreeMap;
+import java.sql.SQLException;
+import java.util.*;
 
 public class TreeHelperTest {
 
@@ -34,6 +32,22 @@ public class TreeHelperTest {
     @Before
     public void setUp() throws Exception {
         mockDatabase = new BaseDatabaseTool() {
+
+            @Override
+            public void setupDatabase() throws SQLException {
+
+            }
+
+            @Override
+            public void setBuild(int version) {
+
+            }
+
+            @Override
+            public int getBuild() {
+                return 0;
+            }
+
             @Override
             public Recipe getRecipeForId(int id) {
                 if(id == 1) { // A
@@ -76,8 +90,26 @@ public class TreeHelperTest {
                 }
                 return Recipe.EMPTY_RECIPE;
             }
+
+            @Override
+            public void putRecipes(List<Recipe> recipes) throws SQLException {
+
+            }
         };
         root = TreeHelper.createTree(1, 2, mockDatabase);
+    }
+
+    @Test
+    public void testGetItemIds() {
+        Set<Integer> ids = TreeHelper.getAllItemIds(root);
+        Set<Integer> expectedIds = new TreeSet<>();
+        expectedIds.add(1);
+        expectedIds.add(2);
+        expectedIds.add(3);
+        expectedIds.add(4);
+        expectedIds.add(5);
+        expectedIds.add(6);
+        Assert.assertEquals(expectedIds, ids);
     }
 
     @Test
@@ -90,12 +122,12 @@ public class TreeHelperTest {
 
     @Test
     public void testCraftingOrder() {
-        List<Integer> order = TreeHelper.getCraftingOrder(root);
-        List<Integer> expectedOrder = new ArrayList<>();
-        expectedOrder.add(2);
-        expectedOrder.add(5);
-        expectedOrder.add(3);
-        expectedOrder.add(1);
+        List<Ingredient> order = TreeHelper.getCraftingOrder(root);
+        List<Ingredient> expectedOrder = new ArrayList<>();
+        expectedOrder.add(new Ingredient(2,4));
+        expectedOrder.add(new Ingredient(5, 64));
+        expectedOrder.add(new Ingredient(3, 8));
+        expectedOrder.add(new Ingredient(1, 2));
         Assert.assertEquals(expectedOrder, order);
     }
 }

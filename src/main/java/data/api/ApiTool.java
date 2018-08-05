@@ -1,8 +1,6 @@
 package data.api;
 
-import data.api.api_objects.NameSearch;
-import data.api.api_objects.Recipe;
-import data.api.api_objects.Version;
+import data.api.api_objects.*;
 import okhttp3.Interceptor;
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
@@ -11,10 +9,13 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
+import retrofit2.converter.scalars.ScalarsConverterFactory;
 import util.Constants;
 
 import java.io.IOException;
+import java.util.Iterator;
 import java.util.List;
+import java.util.Set;
 
 public class ApiTool implements BaseApiTool {
 
@@ -74,4 +75,37 @@ public class ApiTool implements BaseApiTool {
         call.enqueue(callback);
     }
 
+    @Override
+    public void getNameFromId(int id, Callback<IdSearch> callback) {
+        Retrofit.Builder builder = new Retrofit.Builder()
+                .baseUrl(gw2ApiUrl)
+                .addConverterFactory(GsonConverterFactory.create());
+        Retrofit retrofit = builder.client(client).build();
+        ApiClient connection = retrofit.create(ApiClient.class);
+        Call<IdSearch> call = connection.getNameFromId(id);
+        call.enqueue(callback);
+    }
+
+    @Override
+    public void getNamesFromIds(String nameRequest, Callback<List<IdSearch>> callback) {
+        Retrofit.Builder builder = new Retrofit.Builder()
+                .baseUrl(gw2ApiUrl)
+                .addConverterFactory(GsonConverterFactory.create());
+        Retrofit retrofit = builder.client(client).build();
+        ApiClient connection = retrofit.create(ApiClient.class);
+        Call<List<IdSearch>> call = connection.getNamesFromIds(nameRequest);
+        call.enqueue(callback);
+
+    }
+
+    @Override
+    public void getRecipeIds(Callback<String> callback) {
+        Retrofit.Builder builder = new Retrofit.Builder()
+                .baseUrl(gw2ApiUrl)
+                .addConverterFactory(ScalarsConverterFactory.create());
+        Retrofit retrofit = builder.client(client).build();
+        ApiClient connection = retrofit.create(ApiClient.class);
+        Call<String> call = connection.getRecipeIds();
+        call.enqueue(callback);
+    }
 }

@@ -1,0 +1,46 @@
+{
+  "name": "Ambrite Orichalcum Earring",
+  "description": "",
+  "type": "Trinket",
+  "level": 80,
+  "rarity": "Exotic",
+  "vendor_value": 330,
+  "game_types": [
+    "Activity",
+    "Wvw",
+    "Dungeon",
+    "Pve"
+  ],
+  "flags": [
+    "HideSuffix",
+    "AccountBound",
+    "SoulBindOnUse"
+  ],
+  "restrictions": [],
+  "id": 66540,
+  "chat_link": "[&AgHsAwEA]",
+  "icon": "https://render.guildwars2.com/file/A7D26F75959942490CF3C89AB0B319E423BBC8A1/831456.png",
+  "details": {
+    "type": "Accessory",
+    "infusion_slots": [],
+    "infix_upgrade": {
+      "id": 1026,
+      "attributes": [
+        {
+          "attribute": "Toughness",
+          "modifier": 75
+        },
+        {
+          "attribute": "Vitality",
+          "modifier": 53
+        },
+        {
+          "attribute": "Healing",
+          "modifier": 53
+        }
+      ]
+    },
+    "suffix_item_id": 66671,
+    "secondary_suffix_item_id": ""
+  }
+}
